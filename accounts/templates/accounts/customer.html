@@ -9,9 +9,9 @@
 			<div class="card card-body">
 				<h5>Customer: <span>{{customer.name}}</span></h5>
 				<hr>
-				<a class="btn btn-info  btn-sm btn-block" href="">Update Customer</a>
-				<a class="btn btn-danger  btn-sm btn-block mt-2" href="">Delete Customer</a>
-
+				<a class="btn btn-info btn-block" href="">Update Customer</a>
+				<a class="btn btn-danger btn-block mt-2" href="">Delete Customer</a>
+				<a class="btn btn-primary btn-block mt-2" href="{% url 'create_order' customer.id %}">Create Order</a>
 			</div>
 		</div>
 
