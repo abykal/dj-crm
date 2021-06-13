@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
+from .forms import OrderForm
+
 
 # Create your views here.
 def home(request):
@@ -22,9 +24,11 @@ def home(request):
     }
     return render(request, 'accounts/dashboard.html', context)
 
+
 def products(request):
     products = Product.objects.all()
     return render(request, 'accounts/products.html', {'products': products})
+
 
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
@@ -34,3 +38,44 @@ def customer(request, pk):
     context = {'customer': customer, 'orders': orders, 'order_count': order_count}
     return render(request, 'accounts/customer.html', context)
 
+
+def createOrder(request):
+    form = OrderForm()
+    if request.method == 'POST':
+        print('Printing POST', request.POST)
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()      # form handles saving to db
+            return redirect('/')
+
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/order_form.html', context)
+
+
+def updateOrder(request, pk):
+    order = Order.objects.get(id=pk)
+    form = OrderForm(instance=order)
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()      # form handles saving to db
+            return redirect('/')
+
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/order_form.html', context)
+
+
+def deleteOrder(request, pk):
+    order = Order.objects.get(id=pk)
+
+    if request.method == 'POST':
+        order.delete()
+        return redirect('/')
+
+    context = {'item': order}
+    return render(request, 'accounts/delete.html', context)
